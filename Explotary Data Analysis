@@ -1,0 +1,60 @@
+# 1. Import Libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Plot style
+sns.set(style="whitegrid")
+# 2. Load Dataset
+# Make sure 'creditcard.csv' is in the same folder or provide full path
+df = pd.read_csv("creditcard.csv")
+
+# Preview data
+print(df.head())
+# 3. Basic Info
+print("Shape:", df.shape)
+print("\nMissing values:\n", df.isnull().sum())
+print("\nData types:\n", df.dtypes)
+print("\nClass distribution:\n", df['Class'].value_counts())
+# 4. Visualize Class Distribution
+plt.figure(figsize=(6,4))
+sns.countplot(x='Class', data=df)
+plt.title('Fraud (1) vs Non-Fraud (0)')
+plt.xlabel('Class')
+plt.ylabel('Count')
+plt.show()
+
+# Percentage of fraud
+fraud_percent = df['Class'].value_counts(normalize=True)[1] * 100
+print(f"Fraud transactions: {fraud_percent:.4f}%")
+# 5. Transaction Amount Distribution
+plt.figure(figsize=(8,4))
+sns.histplot(df['Amount'], bins=50, kde=True)
+plt.title('Transaction Amount Distribution')
+plt.xlabel('Amount')
+plt.ylabel('Frequency')
+plt.show()
+# 6. Boxplot: Amount by Class
+plt.figure(figsize=(6,4))
+sns.boxplot(x='Class', y='Amount', data=df)
+plt.title('Amount by Transaction Type')
+plt.show()
+# 7. Time Distribution
+plt.figure(figsize=(8,4))
+sns.histplot(df['Time'], bins=50, kde=True)
+plt.title('Time Feature Distribution')
+plt.xlabel('Time (seconds since first transaction)')
+plt.ylabel('Frequency')
+plt.show()
+plt.figure(figsize=(14,10))
+corr = df.corr()
+sns.heatmap(corr, cmap='coolwarm', vmax=0.8, linewidths=0.5)
+plt.title('Feature Correlation Matrix')
+plt.show()
+# 9. Features Most Correlated with Fraud
+correlation_with_class = corr['Class'].sort_values(ascending=False)
+print("Top 10 features positively correlated with Fraud:\n")
+print(correlation_with_class.head(10))
+
+print("\nTop 10 features negatively correlated with Fraud:\n")
+print(correlation_with_class.tail(10))
